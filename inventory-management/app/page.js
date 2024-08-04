@@ -1,6 +1,6 @@
 'use client'
-
-import { useState, useEffect } from 'react'
+import {Camera} from "react-camera-pro";
+import { useState, useEffect, useRef } from 'react'
 import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material'
 import { firestore } from '@/firebase'
 import {
@@ -89,6 +89,8 @@ export default function Home() {
       )
     )
   }
+  const camera = useRef(null);
+  const [image, setImage] = useState(null);
 
   return (
     <Box
@@ -164,8 +166,80 @@ export default function Home() {
             borderRadius: '50px',
           },
         }}      />
+    <Box display="flex" flexDirection="row" gap={2} justifyContent="center">
+      {/* Camera Box */}
+      <Box
+        width="600px"
+        height="400px"
+        bgcolor="#e0e0e0"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius="20px"
+        boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
+        position="relative"
+        overflow="hidden"
+      >
+        <Camera
+          ref={camera}
+          aspectRatio={4 / 3} // Adjust the aspect ratio
+          facingMode="environment" // Use 'user' for front camera or 'environment' for rear camera
+          numberOfCamerasCallback={(cameras) => console.log(`Number of cameras: ${cameras}`)}
+          videoSourceDeviceIdCallback={(deviceId) => console.log(`Video source device ID: ${deviceId}`)}
+        />
+        <Box
+          position="absolute"
+          bottom="10px"
+          display="flex"
+          justifyContent="center"
+          width="100%"
+          px={3}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setImage(camera.current.takePhoto())}
+            sx={{
+              borderRadius: '50%',
+              width: '50px', // Adjusted for better visibility
+              height: '50px', // Adjusted for better visibility
+              backgroundColor: '#ffffff',
+              '&:hover': {
+                backgroundColor: '#e64a19',
+              },
+            }}
+          >
+            📷
+          </Button>
+        </Box>
+      </Box>
 
-      <Box border={'1px solid #333'}  bgcolor={'#93FFE8'}>
+      {/* Display Taken Photo */}
+      {image && (
+        <Box
+          width="600px"
+          height="400px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          borderRadius="20px"
+          boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)"
+          overflow="hidden"
+        >
+          <img
+            src={image}
+            alt="Taken photo"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </Box>
+      )}
+    </Box>
+
+      <Box border={'1px solid #333'} borderRadius = { '20px'} bgcolor={'#93FFE8'}>
         <Box
           width="1500px"
           height="100px"
