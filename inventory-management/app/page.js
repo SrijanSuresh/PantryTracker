@@ -52,7 +52,7 @@ export default function Home() {
   }, [])
 
   const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item.toLowerCase()) // Convert item name to lowercase
+    const docRef = doc(collection(firestore, 'inventory'), item)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
@@ -64,7 +64,7 @@ export default function Home() {
   }
   
   const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item.toLowerCase()) // Convert item name to lowercase
+    const docRef = doc(collection(firestore, 'inventory'), item)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
@@ -76,7 +76,6 @@ export default function Home() {
     }
     await updateInventory()
   }
-
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -153,38 +152,6 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-
-
-      {/* Search Input Field */}
-      <TextField
-        id="search-bar"
-        label="Search Item"
-        variant="outlined"
-        fullWidth
-        value={searchQuery}
-        onChange={handleSearch}
-        sx={{
-          marginBottom: 2,
-          width: '32%', 
-          bgcolor: 'white',
-          borderRadius: '50px',
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#0000FF', 
-              borderRadius: '50px',
-            },
-            '&:hover fieldset': {
-              borderColor: '#0000FF', 
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#0000FF', 
-            },
-          },
-          '& .MuiInputBase-input': {
-            backgroundColor: 'white', 
-            borderRadius: '50px',
-          },
-        }}      />
     <Box width="100vw" height="100vh" display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'} gap={2}>
       {/* Camera Box */}
       <Box display="flex" flexDirection="row" gap={2} justifyContent="center">
@@ -217,19 +184,48 @@ export default function Home() {
         </Button>
       )}
     </Box>
-
-      <Box border={'1px solid #333'} borderRadius = { '20px'} bgcolor={'#93FFE8'}>
+      {/* Search Input Field */}
+      <TextField
+        id="search-bar"
+        label="Search Item"
+        variant="outlined"
+        fullWidth
+        value={searchQuery}
+        onChange={handleSearch}
+        sx={{
+          marginBottom: 2,
+          width: '32%', 
+          bgcolor: 'white',
+          borderRadius: '50px',
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#0000FF', 
+              borderRadius: '50px',
+            },
+            '&:hover fieldset': {
+              borderColor: '#0000FF', 
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#0000FF', 
+            },
+          },
+          '& .MuiInputBase-input': {
+            backgroundColor: 'white', 
+            borderRadius: '50px',
+          },
+        }}      />
+      <Box border={'1px solid #333'}  bgcolor={'#282727'}>
         <Box
           width="1500px"
           height="100px"
-          bgcolor={'#0909FF'}
+          bgcolor={'#010627'}
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
 
         >
           <Typography variant={'h2'} color={'#FFFFE0'} textAlign={'center'}>
-            Inventory Items
+            ITEMS BELOW
           </Typography>
           <Box ml={20}> {/* Add margin bottom for more space if needed */}
             <Button variant="contained" onClick={handleOpen}>
