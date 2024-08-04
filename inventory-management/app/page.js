@@ -165,7 +165,7 @@ export default function Home() {
           },
         }}      />
 
-      <Box border={'1px solid #333'} borderRadius = { '20px'} bgcolor={'#93FFE8'}>
+      <Box border={'1px solid #333'}  bgcolor={'#93FFE8'}>
         <Box
           width="1500px"
           height="100px"
@@ -173,8 +173,7 @@ export default function Home() {
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
-          borderTopLeftRadius="20px" 
-          borderTopRightRadius="20px"            
+
         >
           <Typography variant={'h2'} color={'#FFFFE0'} textAlign={'center'}>
             Inventory Items
