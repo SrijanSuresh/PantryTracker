@@ -1,7 +1,7 @@
 
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // Import Firebase Storage
  
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,8 +19,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const firestore = getFirestore(app);
+const storage = getStorage(app); // Initialize Firebase Storage
 
-export { firestore };
-
+export { firestore, storage };

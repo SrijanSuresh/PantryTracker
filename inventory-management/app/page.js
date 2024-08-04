@@ -1,8 +1,8 @@
 'use client'
-
-import { useState, useEffect } from 'react'
+import {Camera} from "react-camera-pro";
+import { useState, useEffect, useRef } from 'react'
 import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material'
-import { firestore } from '@/firebase'
+import { firestore, storage } from '@/firebase'; // Ensure storage is imported
 import {
   collection,
   doc,
@@ -12,6 +12,7 @@ import {
   deleteDoc,
   getDoc,
 } from 'firebase/firestore'
+import { ref, uploadString, getDownloadURL } from "firebase/storage"; // Import Firebase Storage methods
 
 const style = {
   position: 'absolute',
@@ -51,7 +52,7 @@ export default function Home() {
   }, [])
 
   const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item.toLowerCase()) // Convert item name to lowercase
+    const docRef = doc(collection(firestore, 'inventory'), item)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
@@ -63,7 +64,7 @@ export default function Home() {
   }
   
   const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item.toLowerCase()) // Convert item name to lowercase
+    const docRef = doc(collection(firestore, 'inventory'), item)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
@@ -75,7 +76,6 @@ export default function Home() {
     }
     await updateInventory()
   }
-
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -89,6 +89,26 @@ export default function Home() {
       )
     )
   }
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const camera = useRef(null);
+
+  const handleUpload = async () => {
+    if (image) {
+      setUploading(true);
+      try {
+        const storageRef = ref(storage, `images/${Date.now()}.jpg`); // Create a unique path for the image
+        await uploadString(storageRef, image, 'data_url'); // Upload image as a data URL
+        const downloadURL = await getDownloadURL(storageRef); // Get the download URL
+        console.log('File available at', downloadURL);
+        // You can now save the downloadURL to Firestore or use it as needed
+      } catch (error) {
+        console.error("Upload failed:", error);
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
 
   return (
     <Box
@@ -132,8 +152,38 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
+    <Box width="100vw" height="100vh" display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'} gap={2}>
+      {/* Camera Box */}
+      <Box display="flex" flexDirection="row" gap={2} justifyContent="center">
+        <Box width="600px" height="400px" bgcolor="#e0e0e0" display="flex" justifyContent="center" alignItems="center" borderRadius="20px" boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)" position="relative" overflow="hidden">
+          <Camera ref={camera} aspectRatio={4 / 3} facingMode="environment" />
+          <Box position="absolute" bottom="10px" display="flex" justifyContent="center" width="100%" px={3}>
+            <Button variant="contained" color="primary" onClick={() => setImage(camera.current.takePhoto())} sx={{ borderRadius: '50%', width: '50px', height: '50px', backgroundColor: '#ffffff', '&:hover': { backgroundColor: '#e64a19', }, }}>
+              📷
+            </Button>
+          </Box>
+        </Box>
 
+        {/* Display Taken Photo */}
+        {image && (
+          <Box width="600px" height="400px" display="flex" justifyContent="center" alignItems="center" borderRadius="20px" boxShadow="0 4px 8px rgba(0, 0, 0, 0.1)" overflow="hidden">
+            <img src={image} alt="Taken photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </Box>
+        )}
+      </Box>
 
+      {/* Upload Button */}
+      {image && (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleUpload}
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload Photo'}
+        </Button>
+      )}
+    </Box>
       {/* Search Input Field */}
       <TextField
         id="search-bar"
@@ -164,19 +214,18 @@ export default function Home() {
             borderRadius: '50px',
           },
         }}      />
-
-      <Box border={'1px solid #333'}  bgcolor={'#93FFE8'}>
+      <Box border={'1px solid #333'}  bgcolor={'#282727'}>
         <Box
           width="1500px"
           height="100px"
-          bgcolor={'#0909FF'}
+          bgcolor={'#010627'}
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
 
         >
           <Typography variant={'h2'} color={'#FFFFE0'} textAlign={'center'}>
-            Inventory Items
+            ITEMS BELOW
           </Typography>
           <Box ml={20}> {/* Add margin bottom for more space if needed */}
             <Button variant="contained" onClick={handleOpen}>
