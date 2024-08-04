@@ -106,7 +106,7 @@ export default function Home() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={style} >
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Add Item
           </Typography>
@@ -132,9 +132,7 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={handleOpen}>
-        Add New Item
-      </Button>
+
 
       {/* Search Input Field */}
       <TextField
@@ -144,23 +142,51 @@ export default function Home() {
         fullWidth
         value={searchQuery}
         onChange={handleSearch}
-        sx={{ marginBottom: 2, width: '50%' }} // Adjust width as needed
-      />
+        sx={{
+          marginBottom: 2,
+          width: '32%', 
+          bgcolor: 'white',
+          borderRadius: '50px',
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#0000FF', 
+              borderRadius: '50px',
+            },
+            '&:hover fieldset': {
+              borderColor: '#0000FF', 
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#0000FF', 
+            },
+          },
+          '& .MuiInputBase-input': {
+            backgroundColor: 'white', 
+            borderRadius: '50px',
+          },
+        }}      />
 
-      <Box border={'1px solid #333'}>
+      <Box border={'1px solid #333'} borderRadius = { '20px'} bgcolor={'#93FFE8'}>
         <Box
-          width="800px"
+          width="1500px"
           height="100px"
-          bgcolor={'#ADD8E6'}
+          bgcolor={'#0909FF'}
           display={'flex'}
           justifyContent={'center'}
           alignItems={'center'}
+          borderTopLeftRadius="20px" 
+          borderTopRightRadius="20px"            
         >
-          <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
+          <Typography variant={'h2'} color={'#FFFFE0'} textAlign={'center'}>
             Inventory Items
           </Typography>
+          <Box ml={20}> {/* Add margin bottom for more space if needed */}
+            <Button variant="contained" onClick={handleOpen}>
+              Add New Item
+            </Button>
+          </Box>
         </Box>
-        <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
+  
+        <Stack width={"100%"} height="500px" spacing={0.25} overflow={'auto'} borderRadius={"10px"}>
           {/* Render filteredInventory instead of inventory */}
           {filteredInventory.map(({name, quantity}) => (
             <Box
@@ -171,7 +197,7 @@ export default function Home() {
               justifyContent={'space-between'}
               alignItems={'center'}
               bgcolor={'#f0f0f0'}
-              paddingX={5}
+              paddingX={1}
             >
               <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
                 {name.charAt(0).toUpperCase() + name.slice(1)}
